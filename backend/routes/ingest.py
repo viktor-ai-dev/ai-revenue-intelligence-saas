@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 import schemas
 import models
+from embeddings import get_embedding
 
 router = APIRouter()
 
@@ -13,10 +14,26 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/products")
-def add_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    db_product = models.Product(**product.dict())
-    db.add(db_product)
+@router.post("/product")
+def add_product(data: dict, db: Session = Depends(get_db)):
+
+    text = f"""
+        Product: {data['name']}
+        Price:   {data['price']}
+        Cost:    {data['cost']}
+        Sales:   {data['sales']}
+    """
+    embedding = get_embedding(text)
+
+    product = models.Product(
+        name = data['name'],
+        price = data['price'],
+        cost = data['cost'],
+        sales = data['sales'],
+        embedding = embedding # save embedding, for reading from database
+    )
+
+    db.add(product)
     db.commit()
-    db.refresh(db_product)
-    return db_product
+    db.refresh(product)
+    return product
