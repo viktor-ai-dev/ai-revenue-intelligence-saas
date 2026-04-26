@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routes import ingest,ai_routes
+from routes import ai_routes
+from routes import ingest
 
 app = FastAPI()
 app.include_router(ingest.router, prefix="/ingest")

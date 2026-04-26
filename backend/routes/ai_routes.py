@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from database import SessionLocal
 from services.rag import search_products
 from ai import generate_answer
+from schemas import AIQuery
 
 router = APIRouter()
 
@@ -13,8 +14,8 @@ def get_db():
         db.close()
 
 @router.post("/analyze")
-def analyze(data: dict, db=Depends(get_db)):
-    question = data["question"]
+def analyze(data: AIQuery, db=Depends(get_db)):
+    question = data.question
 
     # omvandlar question till embedded, söker efter 5 liknande 
     # produkter och returnerar en lista med row-objekt
