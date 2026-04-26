@@ -8,3 +8,13 @@ class ProductCreate(BaseModel):
 
 class AIQuery(BaseModel):
     question: str
+
+class ProductResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    cost: float
+    sales: int
+
+    class config:
+        orm_mode = True

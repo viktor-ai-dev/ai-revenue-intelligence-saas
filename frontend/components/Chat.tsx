@@ -1,39 +1,59 @@
-"use client"
+"use client";
 
-import {useState} from "react"
+import { useState } from "react";
 
-export default function Chat(){
+export default function Chat() {
+  const [question, setQuestion] = useState("");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const [question, setQuestion] = useState("")
-    const [response, setResponse] = useState("")
+  const askAI = async () => {
+    try {
+      setLoading(true);
 
-    const askAI = async () => {
-        const res = await fetch("http://localhost:8000/ai/analyze", {
+      const res = await fetch("http://localhost:8000/ai/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question }),
+      });
 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({question})
-        })
+      const data = await res.json();
 
-        const data = await res.json()
-        setResponse(data)
+      // 🔥 FIX: ta rätt field
+      setResponse(data.answer);
+    } catch (err) {
+      console.error(err);
+      setResponse("Something went wrong...");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return (
-        <div>
-            <input
-                value={question}
-                onChange={(e) => (setQuestion(e.target.value))}
-                placeholder="Ask abour revenue..." />
+  return (
+    <div className="bg-white p-4 rounded-xl shadow space-y-3">
+      <h2 className="font-bold">AI Insights</h2>
 
-            <button onClick={askAI}>Ask AI</button>
+      <input
+        className="border p-2 w-full"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask about revenue..."
+      />
 
-            <p>
-                response && { response } : { "Waiting for response..."}
-            </p>
-        </div>
-        
-    );
+      <button
+        className="bg-black text-white px-4 py-2 rounded"
+        onClick={askAI}
+      >
+        Ask AI
+      </button>
+
+      <p className="text-sm text-gray-700">
+        {loading
+          ? "Thinking..."
+          : response || "Waiting for question..."}
+      </p>
+    </div>
+  );
 }

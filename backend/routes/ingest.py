@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import ProductCreate
+from schemas import ProductCreate, ProductResponse
 import models
 from embeddings import get_embedding
+
 
 router = APIRouter()
 
@@ -38,3 +39,14 @@ def add_product(data: ProductCreate, db: Session = Depends(get_db)):
     db.refresh(product)
 
     return {"message": f"Product {data.name} created"}
+
+
+# FastAPI behöver typbeskrivning
+# [ProductRespone] = en faktiskt lista med objekt
+# list[ProductResponse] = en typ: lista av ProductResponse
+@router.get("/products", response_model=list[ProductResponse])
+def get_products(db: Session = Depends(get_db)):
+    products = db.query(models.Product).all()
+    print("products in DB:", len(products))
+    return products
+    
