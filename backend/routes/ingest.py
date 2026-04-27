@@ -44,9 +44,18 @@ def add_product(data: ProductCreate, db: Session = Depends(get_db)):
 # FastAPI behöver typbeskrivning
 # [ProductRespone] = en faktiskt lista med objekt
 # list[ProductResponse] = en typ: lista av ProductResponse
+#
+# Eftersom response_model returnerar en lista av pydantic modell:
+# - Varje python objekt konverteras till JSON och skicka detta i response
+# - Alltså skickas en array av json object
+# - list[ProductResponse] = varje element är en Pydantic, som kommer omvandlas till python-dict(python versionen av JSON objekt)
+# - Detta skickas sedan som response med FastAPI för serialisering, dessa blir JSON objekt.
+#   [
+#       {"name": "A", "price": 10},
+#       {"name": "B", "price": 20},
+#   ]
 @router.get("/products", response_model=list[ProductResponse])
 def get_products(db: Session = Depends(get_db)):
     products = db.query(models.Product).all()
-    print("products in DB:", len(products))
     return products
     

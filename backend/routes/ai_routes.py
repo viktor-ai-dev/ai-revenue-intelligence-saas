@@ -24,7 +24,7 @@ def analyze(data: AIQuery, db=Depends(get_db)):
     # skicka med relevant kontext
     context = ""
     for r in results:
-        context += f"{r.name} {r.price} {r.sales}\n"
+        context += f"Name: {r.name}, Price: {r.price}, Sales: {r.sales}\n"
 
     answer = generate_answer(question, context)
 

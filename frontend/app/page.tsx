@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "@/lib/api";
 import Chat from "@/components/Chat";
 import RevenueChart from "@/components/RevenueChart";
+import AIInsights from "@/components/AIInsights";
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
@@ -47,11 +48,11 @@ export default function Home() {
         </div>
       </div>
 
-      <RevenueChart products={products}/>
-
       {/* CHAT */}
       <Chat />
 
+      <RevenueChart products={products} />
+      <AIInsights products={products} />
     </main>
   );
 }

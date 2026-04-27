@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+// input: List[ProductResponse]
 export default function RevenueChart({ products }: any) {
   const data = products.map((p: any) => ({
     name: p.name,

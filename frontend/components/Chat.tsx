@@ -33,7 +33,7 @@ export default function Chat() {
 
   return (
     <div className="bg-white p-4 rounded-xl shadow space-y-3">
-      <h2 className="font-bold">AI Insights</h2>
+      <h2 className="font-bold">Ask Questions</h2>
 
       <input
         className="border p-2 w-full"

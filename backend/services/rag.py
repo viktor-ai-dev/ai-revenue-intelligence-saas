@@ -9,6 +9,7 @@ from embeddings import get_embedding
 # fetchall() returnerar en [] med row produkter
 def search_products(db, query: str):
     query_vector = get_embedding(query)
+    vector_str = f"[{','.join(map(str, query_vector))}]"
 
     results = db.execute(
         text("""
@@ -17,7 +18,7 @@ def search_products(db, query: str):
         ORDER BY embedding <-> :qvec
         LIMIT 5
         """),
-        {"qvec": query_vector}
+        {"qvec": vector_str}
     ).fetchall()
 
     return results
