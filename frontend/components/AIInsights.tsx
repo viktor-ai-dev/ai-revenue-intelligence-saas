@@ -1,9 +1,11 @@
 "use client";
 
 import { analyze } from "@/lib/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // List[ProductResponse]
+// insyn = transparency
+// insight = förståelse
 export default function AIInsights({products}: any){
     const [loading, setLoading] = useState(false);
     const [insights, setInsights] = useState("")
@@ -34,23 +36,23 @@ export default function AIInsights({products}: any){
         setLoading(false);
     };
 
+    useEffect(()=>{
+      if(products.length > 0){
+        generateInsights();
+      }
+    }, [products]);
+
     return (
     <div className="bg-white p-4 rounded-xl shadow space-y-3">
       
-      <h2 className="font-bold text-lg">AI Insights</h2>
+      <h2 className="font-bold text-lg">AI Insights Live</h2>
 
-      <button
-        onClick={generateInsights}
-        disabled={loading}
-        className="bg-black text-white px-4 py-2 rounded"
-      >
-        {loading ? "Analyzing..." : "Generate Insights"}
-      </button>
-
-      {insights && (
-        <div className="mt-3 text-sm whitespace-pre-line text-gray-700">
+      {loading ? (
+        <p className="text-gray-500">Analyzing data...</p>
+      ) : (  
+        <pre className="text-sm whitespace-pre-wrap text-gray-700">
           {insights}
-        </div>
+        </pre>
       )}
 
     </div>
