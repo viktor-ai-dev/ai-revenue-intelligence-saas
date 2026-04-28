@@ -16,7 +16,7 @@ def get_db():
         db.close()
 
 @router.post("/product")
-def add_product(data: ProductCreate, db: Session = Depends(get_db)):
+def add_product(data: ProductCreate, company_id:int, db: Session = Depends(get_db)):
 
     text = f"""
         Product: {data.name}
@@ -27,6 +27,7 @@ def add_product(data: ProductCreate, db: Session = Depends(get_db)):
     embedding = get_embedding(text)
 
     product = models.Product(
+        company_id = company_id,
         name = data.name,
         price = data.price,
         cost = data.cost,

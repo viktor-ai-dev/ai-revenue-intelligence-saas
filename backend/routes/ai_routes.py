@@ -27,7 +27,7 @@ def analyze(data: AIQuery, db=Depends(get_db)):
 
     # omvandlar question till embedded, söker efter 5 liknande 
     # produkter och returnerar en lista med row-objekt
-    results = search_products(db, question)
+    results = search_products(db, question, data.company_id)
 
     # skicka med relevant kontext
     context = ""

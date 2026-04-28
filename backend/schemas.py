@@ -8,6 +8,7 @@ class ProductCreate(BaseModel):
 
 class AIQuery(BaseModel):
     question: str
+    company_id: int
 
 class ProductResponse(BaseModel):
     id: int
