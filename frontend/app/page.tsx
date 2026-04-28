@@ -7,6 +7,7 @@ import RevenueChart from "@/components/RevenueChart";
 import AIInsights from "@/components/AIInsights";
 import AIAlerts from "@/components/AIAlerts";
 import ProfitSimulator from "@/components/ProfitSimulator";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
@@ -31,6 +32,14 @@ export default function Home() {
 
   return (
     <main className="p-6 space-y-6">
+
+      <SignedOut>
+        <a href="/sign-in">Login</a>
+      </SignedOut>
+
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
       
       {/* KPI SECTION */}
       <div className="grid grid-cols-2 gap-4">

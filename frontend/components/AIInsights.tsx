@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // List[ProductResponse]
 // insyn = transparency
 // insight = förståelse
-export default function AIInsights({products}: any){
+export default function AIInsights({products, company_id}: any){
     const [loading, setLoading] = useState(false);
     const [insights, setInsights] = useState("")
 
@@ -26,7 +26,7 @@ export default function AIInsights({products}: any){
             - risks
             `;
 
-            const res = await analyze(question);
+            const res = await analyze(question, company_id);
             setInsights(res.answer);
 
         } catch(err){
@@ -37,10 +37,10 @@ export default function AIInsights({products}: any){
     };
 
     useEffect(()=>{
-      if(products.length > 0){
+      if(products.length > 0 && company_id){
         generateInsights();
       }
-    }, [products]);
+    }, [products, company_id]);
 
     return (
     <div className="bg-white p-4 rounded-xl shadow space-y-3">

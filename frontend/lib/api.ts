@@ -36,13 +36,13 @@ export async function GetAIAlerts(products:[any]){
     }
 }
 
-export async function analyze(question: string) {
+export async function analyze(question: string, companyId: number) {
 
     try {
         const result = await fetch("http://localhost:8000/ai/analyze",{
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({question})
+            body: JSON.stringify({question: question, companyId: companyId})
         });
     
         if(!result.ok){
