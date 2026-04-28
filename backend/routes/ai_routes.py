@@ -48,14 +48,23 @@ def generate_alerts(data:list[ProductResponse], db=Depends(get_db)):
         Rules:
         - Return only short messages that are max 1 sentence each.
         - Focus on: 
-            1. low profit margins
-            2. revenue concentration risk
-            3. high-risk patterns
-            4. unusual patterns
-            5. underperforming products
+            1. revenue issues
+            2. profit issues
+            3. sales anomalies
+            4. top performers
 
-        - return a string of alert messages separated by ','.
-        - Example: "message1,message2,message3"
+        - Return ONLY valid JSON in this format:
+        {{
+            "alerts": [
+             {{
+                "type": "risk | opportunity | anomaly",
+                "severity": "low | medium | high",
+                "title": "...",
+                "explanation": "..."
+                "recommendation": "..."
+             }}
+            ]
+        }}
 
         Data:
         {data}
@@ -63,10 +72,7 @@ def generate_alerts(data:list[ProductResponse], db=Depends(get_db)):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role":"user", "content": prompt}],
-        temperature=0.8   
+        temperature=0.3   
     )
 
-    text = response.choices[0].message.content
-
-    alerts = text.split(",")
-    return {"alerts":alerts}
+    return json.loads(response.choices[0].message.content)    
