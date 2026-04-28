@@ -17,7 +17,7 @@ export default function AIAlerts({products}:any){
             setLoading(true);
             try{
                 const result = await GetAIAlerts(products);
-                setAlerts(result.alerts);
+                setAlerts(result?.alerts ?? []);
             } catch(err){
                 console.error(err);
                 setAlerts(["Failed to generate AI alerts."]);
