@@ -6,6 +6,7 @@ import Chat from "@/components/Chat";
 import RevenueChart from "@/components/RevenueChart";
 import AIInsights from "@/components/AIInsights";
 import AIAlerts from "@/components/AIAlerts";
+import ProfitSimulator from "@/components/ProfitSimulator";
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
@@ -53,6 +54,7 @@ export default function Home() {
       <Chat />
 
       <RevenueChart products={products} />
+      <ProfitSimulator products={products} />
       <AIAlerts products={products} />
       <AIInsights products={products} />
     </main>
