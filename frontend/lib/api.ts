@@ -16,7 +16,7 @@ export async function fetchProducts() {
     }
 }
 
-export async function GetAIAlerts(products:any[]){
+export async function GetAIAlerts(products: any[]){
 
     try {
         const result = await fetch("http://www.localhost:8000/ai/alerts", {
