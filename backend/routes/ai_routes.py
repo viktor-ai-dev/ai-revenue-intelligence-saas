@@ -8,10 +8,10 @@ import json
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+from agents import decision_agent
 
+load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-
 router = APIRouter()
 
 def get_db():
@@ -76,3 +76,47 @@ def generate_alerts(data:list[ProductResponse], db=Depends(get_db)):
     )
 
     return json.loads(response.choices[0].message.content)    
+
+
+@router.post("/actions")
+def ai_actions(data:list[ProductResponse], db=Depends(get_db)):
+
+    prompt=f"""
+
+    You are an senior growth strategist AI.
+
+    Analyze these prodcts:
+    {data}
+
+    Return ONLY valid JSON:
+    {{
+        actions: [
+            {{
+                "priority": "low | medium | high",
+                "action": "...",
+                "reason": "...",
+                "expectedImpact": "...",
+                "risk": "low | medium | high"
+            }}
+        ]
+    }}
+
+    Focus on:
+    - revenue growth
+    - profit optimization
+    - pricing strategy
+    - marketing actions
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role":"user", "content": prompt}],
+        temperature=0.3
+    )
+
+    return json.loads(response.choices[0].message.content)
+
+
+@router.post("/decision")
+def run_decision_agent(data: list[ProductResponse]):
+    return decision_agent(data)

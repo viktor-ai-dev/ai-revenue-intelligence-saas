@@ -56,3 +56,44 @@ export async function analyze(question: string, companyId: number) {
         console.log("Error: ", error.message);
     }
 }
+
+export async function GetAIActionSystem(products:any[]) {
+    
+    try {
+        const result = await fetch("http://localhost:8000/ai/analyze", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(products)
+        });
+
+        if(!result.ok){
+            throw new Error("Get AI actions failed");
+        }
+
+        return await result.json();
+
+    } catch(error) {
+        console.log("Error", error.message);
+    }
+}
+
+
+export async function runDecisionAgent(products:any[]) {
+    
+    try {
+        const result = await fetch("http://localhost:8000/ai/decision", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(products)
+        });
+
+        if(!result.ok){
+            throw new Error("Failed to get decisions");
+        }
+
+        return await result.json();
+
+    } catch(error){
+        console.log("Error", error.message);
+    }
+}

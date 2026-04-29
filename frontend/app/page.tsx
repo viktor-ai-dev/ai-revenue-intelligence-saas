@@ -11,6 +11,7 @@ import ProfitSimulator from "@/components/ProfitSimulator";
 import AuthGate from "@/components/AuthGate";
 
 import { useUser } from "@clerk/nextjs";
+import AIActionSystem from "@/components/AIActionSystem";
 
 export default function Home() {
   const { user, isLoaded } = useUser();
@@ -86,11 +87,12 @@ export default function Home() {
             <ProfitSimulator products={products} />
             <AIAlerts products={products} />
 
-            {/* 🔥 FIX: skicka companyId */}
             <AIInsights
               products={products}
               companyId={companyId}
             />
+
+            <AIActionSystem products={products}/>
           </>
         )}
 

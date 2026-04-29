@@ -6,3 +6,19 @@ export type AIAlert = {
   explanation: string;
   recommendation: string;
 };
+
+export type AIAction = {
+  priority: "low" | "medium" | "high";
+  action: string;
+  reason: string;
+  expectedImpact: string;
+  risk: "low" | "medium" | "high";
+};
+
+export type AIDecision = {
+  action: string;
+  execute: boolean;
+  priority: number;
+  reason: string;
+  impact: string;
+}
