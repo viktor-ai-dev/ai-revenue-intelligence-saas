@@ -41,11 +41,12 @@ def analyze(data: AIQuery, db=Depends(get_db)):
     context = "\n".join(
         f"Name: {r.name}, Price: {r.price}, Sales: {r.sales}\n" for r in results
     )
-
+    # returnerar JSON/Dict: {summary, products, answer}
     answer = generate_answer(data.question, context)
 
     print("RAW AI:", answer)
 
+    # normalize, returnerar defaults om fälten är tomma
     return AIResponse(**normalize(answer))
 
 @router.post("/alerts")
