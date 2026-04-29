@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchProducts } from "@/lib/api";
+import { fetchProducts, seedData } from "@/lib/api";
 
 import Chat from "@/components/Chat";
 import RevenueChart from "@/components/RevenueChart";
@@ -20,7 +20,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   // 🧠 TEMP companyId (sen: organization.id)
-  const companyId = user?.id || 1;
+  const companyId = user?.id || "1";
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -42,7 +42,14 @@ export default function Home() {
   );
 
   return (
-    <AuthGate hasData={products.length > 0}>
+    <AuthGate 
+      hasData={products.length > 0}
+      onSeed={async () =>{
+
+        await seedData(companyId);
+        window.location.reload();
+        }}
+      >
       <main className="p-6 space-y-6">
 
         {/* 🧠 LOADING STATE */}
@@ -82,7 +89,7 @@ export default function Home() {
             </div>
 
             {/* Dashboard */}
-            <Chat />
+            <Chat companyId={companyId}/>
             <RevenueChart products={products} />
             <ProfitSimulator products={products} />
             <AIAlerts products={products} />

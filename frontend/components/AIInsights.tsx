@@ -2,13 +2,14 @@
 
 import { analyze } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { AIAnalyzeResponse } from "@/types/ai";
 
 // List[ProductResponse]
 // insyn = transparency
 // insight = förståelse
 export default function AIInsights({products, company_id}: any){
     const [loading, setLoading] = useState(false);
-    const [insights, setInsights] = useState("")
+    const [analyzeResponse, setAnalyzeResponse] = useState<AIAnalyzeResponse>();
 
     const generateInsights = async () => {
         setLoading(true);
@@ -27,10 +28,10 @@ export default function AIInsights({products, company_id}: any){
             `;
 
             const res = await analyze(question, company_id);
-            setInsights(res.answer);
+            setAnalyzeResponse(res.answer);
 
         } catch(err){
-            setInsights("Error generating insights");
+            console.log("Error: ", err);
         }
 
         setLoading(false);
@@ -51,7 +52,7 @@ export default function AIInsights({products, company_id}: any){
         <p className="text-gray-500">Analyzing data...</p>
       ) : (  
         <pre className="text-sm whitespace-pre-wrap text-gray-700">
-          {insights}
+          {analyzeResponse?.summary}
         </pre>
       )}
 

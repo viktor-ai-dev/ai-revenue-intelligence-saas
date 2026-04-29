@@ -7,7 +7,7 @@ from embeddings import get_embedding
 #
 # Vi gör en semantisk search(av betydelse/likhet)
 # fetchall() returnerar en [] med row produkter
-def search_products(db, query: str, company_id: int):
+def search_products(db, query: str, company_id: str):
     query_vector = get_embedding(query)
     vector_str = f"[{','.join(map(str, query_vector))}]"
 

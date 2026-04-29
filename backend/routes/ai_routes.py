@@ -2,13 +2,15 @@ from fastapi import APIRouter, Depends
 from database import SessionLocal
 from services.rag import search_products
 from ai import generate_answer
-from schemas import AIQuery
-from schemas import ProductResponse
+from schemas import AIQuery, AISeed, ProductResponse, AIResponse
+import schemas
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
 from agents import decision_agent
+import models
+
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -21,22 +23,30 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/analyze")
-def analyze(data: AIQuery, db=Depends(get_db)):
-    question = data.question
+def normalize(ai):
+    return {
+        "summary": ai.get("summary", ""),
+        "products": ai.get("products", []),
+        "answer": ai.get("answer", "")
+    }
 
+@router.post("/analyze", response_model=AIResponse)
+def analyze(data: AIQuery, db=Depends(get_db)):
+    
     # omvandlar question till embedded, söker efter 5 liknande 
     # produkter och returnerar en lista med row-objekt
-    results = search_products(db, question, data.company_id)
+    results = search_products(db, data.question, data.company_id)
 
     # skicka med relevant kontext
-    context = ""
-    for r in results:
-        context += f"Name: {r.name}, Price: {r.price}, Sales: {r.sales}\n"
+    context = "\n".join(
+        f"Name: {r.name}, Price: {r.price}, Sales: {r.sales}\n" for r in results
+    )
 
-    answer = generate_answer(question, context)
+    answer = generate_answer(data.question, context)
 
-    return {"answer": answer}
+    print("RAW AI:", answer)
+
+    return AIResponse(**normalize(answer))
 
 @router.post("/alerts")
 def generate_alerts(data:list[ProductResponse], db=Depends(get_db)):
@@ -120,3 +130,20 @@ def ai_actions(data:list[ProductResponse], db=Depends(get_db)):
 @router.post("/decision")
 def run_decision_agent(data: list[ProductResponse]):
     return decision_agent(data)
+
+
+@router.post("/seed")
+def seed_data(seed: AISeed, db = Depends(get_db)):
+     
+    products = [
+        {"name": "Wireless Headphones", "price": 120, "cost": 60, "sales": 80},
+        {"name": "Smart Watch", "price": 200, "cost": 120, "sales": 40},
+        {"name": "Gaming Mouse", "price": 50, "cost": 20, "sales": 150},
+    ]
+
+    for p in products:
+        db.add(models.Product(**p, company_id=seed.company_id))
+
+    db.commit()
+
+    return {"status": "seeded"}

@@ -22,3 +22,9 @@ export type AIDecision = {
   reason: string;
   impact: string;
 }
+
+export type AIAnalyzeResponse = {
+  summary: string;
+  products: [{name:string, profit:number, insights: string[]}];
+  answer: string;
+}
